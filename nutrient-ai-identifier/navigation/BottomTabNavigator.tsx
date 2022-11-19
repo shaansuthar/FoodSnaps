@@ -44,26 +44,7 @@ export default function BottomTabNavigator() {
           tabBarLabel: "Intro",
         }}
       />
-      <BottomTab.Screen
-        name="ClassifyImage"
-        component={ClassifyImageScreen}
-        options={{
-          tabBarIcon: ({ color }) => (
-            <TabBarIcon name="md-git-network" color={color} />
-          ),
-          tabBarLabel: "Classify Image",
-        }}
-      />
-      <BottomTab.Screen
-        name="DetectObjects"
-        component={DetectObjectsScreen}
-        options={{
-          tabBarIcon: ({ color }) => (
-            <TabBarIcon name="md-crop" color={color} />
-          ),
-          tabBarLabel: "Detect Objects",
-        }}
-      />
+      
       <BottomTab.Screen
         name="DetectFoods"
         component={DetectFoodsScreen}
