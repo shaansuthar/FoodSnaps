@@ -1,4 +1,4 @@
-# AI-Nutrition-Identification
+# FoodSnaps
 
 TLDR: Using computer vision and machine learning, FoodSnaps identifies the foods in front of you and provides you with accurate nutrition facts and easy to make healthy recipes.
 
