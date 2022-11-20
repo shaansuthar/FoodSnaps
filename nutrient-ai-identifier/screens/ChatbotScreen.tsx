@@ -6,11 +6,12 @@ import BubblesFactory from '../components/chatbot/bubbles-factory'
 import ChatBubble from '../components/chatbot/chat-bubble'
 import data from '../components/chatbot/conversation-flow.json'
 import { Ionicons } from '@expo/vector-icons'
+import { AntDesign } from '@expo/vector-icons'; 
 
 const MARGIN_HORIZONTAL = 16
 const INPUT_HEIGHT = 38
 const BUTTON_OFFSET = 4
-const BUTTON_HEIGHT = INPUT_HEIGHT - BUTTON_OFFSET * 2
+const BUTTON_HEIGHT = 30
 
 const ChatBot = () => {
     const [components, setComponents] = useState([])
@@ -57,12 +58,7 @@ const ChatBot = () => {
                         onChangeText={_onChangeText}
                     />
                     <TouchableOpacity style={styles.sendButton} onPress={_onSendMessage}>
-                        <Ionicons 
-                            name="md-arrow-round-up"
-                            size={22}
-                            color="#fff"
-                            style={styles.sendIcon}
-                        />
+                    <AntDesign name="upcircleo" size={30} color="black" />
                     </TouchableOpacity>
                 </View>
             </InputAccessoryView>            
@@ -75,22 +71,25 @@ export default ChatBot
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: 'gray',
+        backgroundColor: 'white',
     },
     textInputContainer: {
+        // borderColor: 'lightgrey',
         width: '100%',
         height: INPUT_HEIGHT,
         paddingHorizontal: MARGIN_HORIZONTAL,
-        marginBottom: 4
+        marginBottom: 50
     },
     textInput: {
         borderWidth: 1,
-        borderColor: 'lightgrey',
-        borderRadius: INPUT_HEIGHT / 2,
+        borderColor: 'black',
+        borderRadius: 19,
         width: 100,
-        height: INPUT_HEIGHT,
+        height: 38,
         paddingHorizontal: 12,
         fontSize: 18,
+        color: 'Black',
+        backgroundColor: 'white',
         lineHeight: 24,
         paddingTop: 0,
         paddingBottom: 4        
@@ -102,7 +101,7 @@ const styles = StyleSheet.create({
         width: BUTTON_HEIGHT,
         height: BUTTON_HEIGHT,
         borderRadius: BUTTON_HEIGHT / 2,
-        backgroundColor: '#4579FB',
+        backgroundColor: '#4579FB', //'#4579FB'
         justifyContent: 'center',
         alignItems: 'center'
     },

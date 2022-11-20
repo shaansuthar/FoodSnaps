@@ -49,7 +49,7 @@ export default function BottomTabNavigator() {
         component={DetectFoodsScreen}
         options={{
           tabBarIcon: ({ color }) => (
-            <TabBarIcon name="md-pizza" color={color} />
+            <TabBarIcon name="md-camera" color={color} />
           ),
           tabBarLabel: "Detect Foods",
         }}

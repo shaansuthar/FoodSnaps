@@ -82,7 +82,7 @@ const styles = StyleSheet.create({
         minHeight: 50
     },
     bubble: {
-        backgroundColor: 'white',
+        backgroundColor: 'lightgrey',
         padding: 16,
         marginRight: '45%',
         marginTop: 5,
@@ -90,6 +90,7 @@ const styles = StyleSheet.create({
         maxWidth: '75%',
         alignSelf: 'flex-start',
         borderRadius: 20,
+        borderColor: 'grey',
         borderTopLeftRadius: 0
     },
     textBubble: {
