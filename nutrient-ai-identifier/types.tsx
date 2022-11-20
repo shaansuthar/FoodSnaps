@@ -6,6 +6,7 @@ export type RootStackParamList = {
 export type BottomTabParamList = {
   Home: undefined;
   DetectFoods: undefined;
+  Chatbot: undefined;
   References: undefined;
 };
 
@@ -15,6 +16,10 @@ export type HomeParamList = {
 
 export type DetectFoodsParamList = {
   DetectFoodScreen: undefined;
+};
+
+export type ChatbotScreenParamList = {
+  ChatbotScreen: undefined;
 };
 
 export type ReferencesParamList = {

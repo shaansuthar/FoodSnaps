@@ -293,11 +293,13 @@ const CameraPreview = ({photo, retakePicture, savePhoto}) => {
             <TouchableOpacity
               onPress={retakePicture}
               style={{
+                justifyContent: 'center',
+                alignItems: 'center',
                 width: 130,
                 height: 40,
-
+                backgroundColor: 'rgba(128, 128, 128, 0.8)',
                 alignItems: 'center',
-                borderRadius: 4
+                borderRadius: 20
               }}
             >
               <Text
@@ -312,11 +314,13 @@ const CameraPreview = ({photo, retakePicture, savePhoto}) => {
             <TouchableOpacity
               onPress={savePhoto}
               style={{
+                justifyContent: 'center',
+                alignItems: 'center',
                 width: 130,
                 height: 40,
-
+                backgroundColor: 'rgba(128, 128, 128, 0.8)',
                 alignItems: 'center',
-                borderRadius: 4
+                borderRadius: 20
               }}
             >
               <Text
