@@ -2,13 +2,10 @@
     "chatBot": {
       "messages": [
         {
-          "text": "test 1"
+          "text": "What kind of meal do you want to eat today?"
         },
         {
-          "text": "test 2"
-        },
-        {
-          "text": "test 3"
+          "text": "Here are some options: breakfast, lunch, or dinner"
         }
       ]
     }
