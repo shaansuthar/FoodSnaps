@@ -13,8 +13,6 @@ This project was made during HackWestern 2022 to help people identify the foods 
 
 <h2>How It Works</h2>
 
-Using Adhawk MindLinks to track eye position of user when on the website to create a heat map of what they are looking at. This data can be analyzed later to determine what users are focusing on, allowing developers to make improvements based on it. 
-
 Using LogMeal's API we can use artificial intelligence to recognize types of food and the ingredients that are in them. From these images, LogMeal is able to find recipes that fit your items and can provide healthy options based on your ingredients. The app also includes a built in chatbot that scans various websites and finds the best match to provide a healthy recipe based on the user's search criteria.
 
 <h2>System Requirements</h2>
