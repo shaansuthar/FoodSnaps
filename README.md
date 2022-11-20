@@ -56,7 +56,7 @@ There are many things that we can do to improve on this project for the future, 
 - Implement a chatbot that has NLP capabilities using Cohere's native environment
 
 
-<h2>Things We Used</h2>
+<h2>Tools We Used</h2>
 
 ![Ant-Design](https://img.shields.io/badge/-AntDesign-%230170FE?style=for-the-badge&logo=ant-design&logoColor=white)
 ![Canva](https://img.shields.io/badge/Canva-%2300C4CC.svg?style=for-the-badge&logo=Canva&logoColor=white)
