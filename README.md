@@ -13,7 +13,7 @@ This project was made during HackWestern 2022 to help people identify the foods 
 
 <h2>How It Works</h2>
 
-Using Adhawk MindLinks to track eye position of user when on the website to create a heat map of what they are looking at. This data can be analyzed later to determine what users are focusing on, allowing developers to make improvements based on it. 
+Using LogMeal's API we can use artificial intelligence to recognize types of food and the ingredients that are in them. From these images, LogMeal is able to find recipes that fit your items and can provide healthy options based on your ingredients. The app also includes a built in chatbot that scans various websites and finds the best match to provide a healthy recipe based on the user's search criteria.
 
 <h2>System Requirements</h2>
 
@@ -29,23 +29,17 @@ To recreate this project you will need the following software:
 
 <img src="https://api.logmeal.es/assets/logo_complete_v2.png" title="LogMeal" width="75%"/>
 
-
-<h2>Alternative Options (... And Why Our Method Is Better)</h2>
-
-| Analytics Option | Description | Differences |
-| --- | --- | --- |
-| EYEs.py | - Tracks user behaviour at the core by tracking a physical component (their eyes) | - Tracks how the user interacts with their computer by directly tracking the eyes which are directed at what the user focuses on |
-| MSFT Clarity | - Tracks user clicks, frequency of clicks, mouse position over time, etc | - Tracks user input through a layer of hardware so there's some data lost inherently |
-| Google Analytics | - Session duration, bounce rate, engagement, traffic, etc | - Doesn't track how the user utilizes the UI so pain points and confusing areas in the UI are harder to catch |
-
 <h2>Steps to Replicate</h2>
 
 1. Clone the repository
-	```sh git clone git@github.com:shaansuthar/Eye-Tracking-Heatmap.git```
-2. Install the Adhawk Back End (attach the link here)
-3. Install all dependencies using ```pip install *insert_dependencies_here*```
-4. Run screen_tracking.py
-	```sh python screen_tracking.py```
+	```sh git clone git@github.com:shaansuthar/FoodSnaps.git```
+2. NPM install
+3. Obtain LogMeal API key `
+4. Run NPX expo start
+	```sh npx expo start```
+5. Download the Expo Go app on your mobile device
+6. Scan QR code 
+7. Enjoy healthy food
 
 
 
@@ -53,17 +47,16 @@ To recreate this project you will need the following software:
 <h2>Next Steps</h2>
 
 There are many things that we can do to improve on this project for the future, including:
-- Create a recording tool to display the order in which each part of the website was viewed (i.e. the user first viewed the top left part of the page)
-- Implementing a web-based front end with an API communication layer with Python backend
-- Adapting our heat maps to adjust with scrolling and changing routes in a website
-- Creating a dashboard for managing different user recordings and grouping the data
-- Rescaling to prevent the tracking markers from covering content
-- Combine insights with Microsoft Clarity and Google Analytics to get even more data on website performance for a wider variety of scenarios
-- Train an AI/machine learning model to suggest changes by noticing pain points in the UI
+- Properly import and access the API
+- Identify larger varieties of food items
+- Create more functionality within the app
+- Remove bugs in the code
+- Implement a chatbot that has NLP capabilities using Cohere's native environment
 
 
-<h2>Things We Used</h2>
+<h2>Tools We Used</h2>
 
+![Ant-Design](https://img.shields.io/badge/-AntDesign-%230170FE?style=for-the-badge&logo=ant-design&logoColor=white)
 ![Canva](https://img.shields.io/badge/Canva-%2300C4CC.svg?style=for-the-badge&logo=Canva&logoColor=white)
 ![Expo](https://img.shields.io/badge/expo-1C1E24?style=for-the-badge&logo=expo&logoColor=#D04A37)
 ![Git](https://img.shields.io/badge/git-%23F05033.svg?style=for-the-badge&logo=git&logoColor=white)
@@ -77,9 +70,6 @@ There are many things that we can do to improve on this project for the future, 
 ![TypeScript](https://img.shields.io/badge/typescript-%23007ACC.svg?style=for-the-badge&logo=typescript&logoColor=white)
 ![Visual Studio Code](https://img.shields.io/badge/Visual%20Studio%20Code-0078d7.svg?style=for-the-badge&logo=visual-studio-code&logoColor=white)
 ![Yarn](https://img.shields.io/badge/yarn-%232C8EBB.svg?style=for-the-badge&logo=yarn&logoColor=white)
-
-
-
 
 
 
