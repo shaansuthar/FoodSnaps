@@ -7,6 +7,7 @@ import Colors from "../constants/Colors";
 import useColorScheme from "../hooks/useColorScheme";
 import HomeScreen from "../screens/HomeScreen";
 import DetectFoodsScreen from "../screens/DetectFoodsScreen";
+import ChatbotScreen from "../screens/ChatbotScreen";
 // import TabFiveScreen from "../screens/TabFiveScreen";
 
 import {
@@ -23,7 +24,6 @@ export default function BottomTabNavigator() {
   return (
     <BottomTab.Navigator
       initialRouteName="Home"
-      // tabBarOptions={{ activeTintColor: Colors[colorScheme].tint }}
       screenOptions={{
         tabBarActiveTintColor: Colors[colorScheme].tint,
         tabBarStyle: [
@@ -35,7 +35,7 @@ export default function BottomTabNavigator() {
       }}
     >
       <BottomTab.Screen
-        name="Home"
+        name="FoodSnaps"
         component={HomeScreen}
         options={{
           tabBarIcon: ({ color }) => (
@@ -44,15 +44,24 @@ export default function BottomTabNavigator() {
           tabBarLabel: "Intro",
         }}
       />
-      
       <BottomTab.Screen
-        name="DetectFoods"
+        name="Food Identification"
         component={DetectFoodsScreen}
         options={{
           tabBarIcon: ({ color }) => (
             <TabBarIcon name="md-pizza" color={color} />
           ),
           tabBarLabel: "Detect Foods",
+        }}
+      />
+      <BottomTab.Screen
+        name="Chatbot"
+        component={ChatbotScreen}
+        options={{
+          tabBarIcon: ({ color }) => (
+            <TabBarIcon name="md-chatbubble" color={color} />
+          ),
+          tabBarLabel: "Chatbot",
         }}
       />
     </BottomTab.Navigator>
