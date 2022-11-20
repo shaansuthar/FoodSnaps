@@ -43,6 +43,7 @@
     "react-native": "0.70.5",
     "react-native-fs": "^2.16.6",
     "react-native-gesture-handler": "~2.8.0",
+    "react-native-inappbrowser-reborn": "^3.7.0",
     "react-native-safe-area-context": "4.4.1",
     "react-native-screens": "~3.18.0",
     "react-native-web": "~0.18.7",

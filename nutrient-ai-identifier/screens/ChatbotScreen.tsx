@@ -1,11 +1,18 @@
 import React, { useEffect, useState, Fragment } from 'react'
-import { StyleSheet, ScrollView, Alert, Text, TextInput, InputAccessoryView, View, TouchableOpacity, useWindowDimensions } from 'react-native'
-import { SafeAreaView } from 'react-native-safe-area-context'
+import {
+    StyleSheet,
+    TextInput,
+    View,
+    ScrollView,
+    useWindowDimensions,
+    InputAccessoryView,
+    TouchableOpacity,
+    Linking
+  } from 'react-native';
 
 import BubblesFactory from '../components/chatbot/bubbles-factory'
 import ChatBubble from '../components/chatbot/chat-bubble'
 import data from '../components/chatbot/conversation-flow.json'
-import { Ionicons } from '@expo/vector-icons'
 import { AntDesign } from '@expo/vector-icons'; 
 
 const MARGIN_HORIZONTAL = 16
@@ -16,13 +23,17 @@ const BUTTON_HEIGHT = 30
 const ChatBot = () => {
     const [components, setComponents] = useState([])
     const [text, setText] = useState('')
+    const healthyWebsites = ['https://www.eatingwell.com/search/?q=', 'https://www.cleaneatingkitchen.com/?s=', 'https://fitfoodiefinds.com/?s=', 'https://downshiftology.com/#search/q=', 'https://realsimplegood.com/#search/q=']
 
     const _onChangeText = (t: string): void => {
         setText(t)
     }
 
     const _onSendMessage = (): void => {
-        // Implement this function
+        const randomIndex = Math.floor(Math.random() * healthyWebsites.length);
+        const item = healthyWebsites[randomIndex];
+        let url = `${item}healthy+${text}`
+        Linking.openURL(url)
     }
 
     const { width: windowWidth } = useWindowDimensions()
