@@ -2,7 +2,7 @@ import React, { useEffect, useState, Fragment } from 'react'
 import {
     StyleSheet,
     TextInput,
-    View,
+    KeyboardAvoidingView,
     ScrollView,
     useWindowDimensions,
     InputAccessoryView,
@@ -61,7 +61,7 @@ const ChatBot = () => {
                 )
             })}   
             <InputAccessoryView>
-                <View style={styles.textInputContainer}>
+                <KeyboardAvoidingView style={styles.textInputContainer}>
                     <TextInput 
                         value={text}
                         style={[styles.textInput, { width }]}
@@ -71,7 +71,7 @@ const ChatBot = () => {
                     <TouchableOpacity style={styles.sendButton} onPress={_onSendMessage}>
                     <AntDesign name="upcircleo" size={30} color="black" />
                     </TouchableOpacity>
-                </View>
+                </KeyboardAvoidingView>
             </InputAccessoryView>            
         </ScrollView>          
     )
@@ -89,7 +89,10 @@ const styles = StyleSheet.create({
         width: '100%',
         height: INPUT_HEIGHT,
         paddingHorizontal: MARGIN_HORIZONTAL,
-        marginBottom: 50
+        paddingBottom: '25%',
+
+        //position: 'absolute',
+        //bottom: 50,
     },
     textInput: {
         borderWidth: 1,
