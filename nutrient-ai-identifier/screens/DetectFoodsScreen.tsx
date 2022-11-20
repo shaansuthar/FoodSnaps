@@ -2,7 +2,11 @@ import React, { useEffect, useState } from "react";
 // Image, Platform, ScrollView, ImageBackground
 import {  StyleSheet, TouchableOpacity, Alert, Text, View, ImageBackground } from "react-native";
 import {StatusBar} from 'expo-status-bar'
-import { Camera } from 'expo-camera';
+import { Camera, CameraCapturedPicture } from 'expo-camera';
+import { LOGMEAL_API_KEY } from "@env";
+import axios from 'axios';
+
+var photo;
 
 //import { LOGMEAL_API_KEY } from "@env";
 
@@ -12,6 +16,8 @@ import { Camera } from 'expo-camera';
 //import { Text, View } from "../components/Themed";
 
 
+
+
 export default function DetectFoodsScreen() {
   const [startCamera, setStartCamera] = React.useState(false)
   const [previewVisible, setPreviewVisible] = React.useState(false)
@@ -19,10 +25,19 @@ export default function DetectFoodsScreen() {
   const [cameraType, setCameraType] = React.useState(Camera.Constants.Type.back)
   const [flashMode, setFlashMode] = React.useState('off')
   var camera: Camera;
+
+
+  async function base64ToFile(base64) {
+    const res = fetch(base64)
+    const buf = await res.arrayBuffer()
+    const file = new File([buf], "capture_camera.jpeg", {
+      type: 'image/jpeg',
+    })
+    return file;
+  };
   
   const __startCamera = async () => {
     const {status} = await Camera.requestCameraPermissionsAsync()
-    console.log(status)
     if (status === 'granted') {
       setStartCamera(true)
     } else {
@@ -31,18 +46,43 @@ export default function DetectFoodsScreen() {
   }
   const __takePicture = async () => {
     try {
-        const options = { quality: 0.5, base64: true };
-        const photo = await camera.takePictureAsync(options);
-        console.log(photo.uri, '<<<<<<<<<<<<<<<<<<<<<');
-        console.log(photo)
+        const options = { quality: 0, base64: true, skipProcessing: true };
+        photo = await camera.takePictureAsync(options);
         setPreviewVisible(true)
-        //setStartCamera(false)
         setCapturedImage(photo)
     } catch (error) {
         console.log(error, "ERROR <<<<<<<<<<<<<")
     }
   }
-  const __savePhoto = () => {}
+
+  const __savePhoto = () => {
+    var FormData = require('form-data');
+    var data = new FormData();
+
+    var fileVersion = base64ToFile(capturedImage.base64)
+ 
+    data.append('image', fileVersion);
+    
+    var config = {
+      method: 'post',
+      url: 'https://api.logmeal.es/v2/image/recognition/complete/:model_version?skip_types=[1,3]&language=eng',
+      headers: { 
+        'Content-Type': 'multipart/form-data', 
+        'Accept': 'application/json', 
+        'Authorization': 'Bearer ' + LOGMEAL_API_KEY
+      },
+      data : data._parts[0][1]
+    };
+
+    axios(config)
+    .then(function (response) {
+      console.log(JSON.stringify(response.data));
+    })
+    .catch(function (error) {
+      console.log(error);
+    });    
+  }
+
   const __retakePicture = () => {
     setCapturedImage(null)
     setPreviewVisible(false)
@@ -64,6 +104,7 @@ export default function DetectFoodsScreen() {
       setCameraType('back')
     }
   }
+  
 
   return (
     <View style={styles.container}>
@@ -220,7 +261,6 @@ const styles = StyleSheet.create({
 })
 
 const CameraPreview = ({photo, retakePicture, savePhoto}) => {
-  console.log('sdsfds', photo)
   return (
     <View
       style={{
