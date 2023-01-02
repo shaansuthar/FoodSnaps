@@ -3,7 +3,6 @@ import { View, Button, Image, StyleSheet, Text, ScrollView, TouchableOpacity, Li
 import * as ImagePicker from "expo-image-picker";
 import {SPOONACULAR_API_KEY} from "@env";
 import Axios from "axios";
-import Browser from './Browser'
 
 const recipe_width = '40%'
 
@@ -47,26 +46,33 @@ export default function DetectFoodsScreen() {
     .then(response => {setName(response.data.category.name); setRecipes(response.data.recipes); console.log(response.data)})
   }
 
+  const resetState = async() => {
+    setImage(null)
+  }
+
   if (image != null) {
 
     return (
-      <ScrollView>
+      <ScrollView contentContainerStyle={styles.scrollContainer}>
+        <View style={{alignSelf: "flex-start"}}>
+          <Button title="< Back" onPress={resetState} ></Button>
+        </View>
         <Image source={{ uri: image }} style={{ width: 200, height: 200 }} />
-        <Button title="Get Recipe and Nutritional Information" onPress={getData} disabled={uploaded}/>
+        <Button title="Get Recipe Information" onPress={getData} disabled={uploaded}/>
         <View>
           {name && <Text>The Identified Food Is: {name}</Text>}
-          {recipes && <Text>Recipes for {name}:</Text>}
+          {recipes && <Text>Recipes for {name}: (Click the image to navigate to the recipe)</Text>}
         </View>
-        <View>
+        <View style={styles.recipes}>
         {recipes &&
           recipes.map((recipe, index) => {
             return (
-              <View key={index} style={styles.recipe}>
-                <Text>{recipe.title}</Text>
-                <TouchableOpacity onPress={() => Linking.openURL(recipe.url)}>
-                  <Image source={{uri: `https://spoonacular.com/recipeImages/${recipe.id}-240x150.${recipe.imageType}`}} style={{width: 100, height: 100}}/>
-                </TouchableOpacity>
-              </View>
+                <View key={index} style={styles.recipe}>
+                  <Text>{recipe.title}</Text>
+                  <TouchableOpacity onPress={() => Linking.openURL(recipe.url)}>
+                    <Image source={{uri: `https://spoonacular.com/recipeImages/${recipe.id}-240x150.${recipe.imageType}`}} style={{width: 100, height: 100}}/>
+                  </TouchableOpacity>
+                </View>
             );
           })}
         </View>        
@@ -87,8 +93,14 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
   },
+  scrollContainer: {
+    flexDirection: "column"
+  },
   recipes: {
-    display: "flex"
+    flex: 1,
+    flexDirection: "row",
+    flexWrap: "wrap",
+    justifyContent: "space-evenly"
   },
   recipe: {
     maxWidth: recipe_width,
