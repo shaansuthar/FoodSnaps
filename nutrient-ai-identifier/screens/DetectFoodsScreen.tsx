@@ -1,666 +1,116 @@
 import React, { useEffect, useState } from "react";
-// Image, Platform, ScrollView, ImageBackground
-import {  StyleSheet, TouchableOpacity, Alert, Text, View, ImageBackground } from "react-native";
-import {StatusBar} from 'expo-status-bar'
-import { Camera, CameraCapturedPicture } from 'expo-camera';
-import { LOGMEAL_API_KEY } from "@env";
-import axios from 'axios';
+import { View, Button, Image, StyleSheet, Text, ScrollView, TouchableOpacity, Linking } from "react-native";
+import * as ImagePicker from "expo-image-picker";
+import {SPOONACULAR_API_KEY} from "@env";
+import Axios from "axios";
 
-var photo;
+const recipe_width = '40%'
 
-//import { LOGMEAL_API_KEY } from "@env";
-
-//import * as ImagePicker from "expo-image-picker";
-//import * as ImageManipulator from "expo-image-manipulator";
-
-//import { Text, View } from "../components/Themed";
-
-
-
+const createFormData = (uri) => {
+  const fileName = uri.split('/').pop();
+  const fileType = fileName.split('.').pop();
+  const formData = new FormData();
+  formData.append('file', { 
+    uri, 
+    name: fileName, 
+    type: `image/${fileType}` 
+  });
+  
+  return formData;
+}
 
 export default function DetectFoodsScreen() {
-  const [startCamera, setStartCamera] = React.useState(false)
-  const [previewVisible, setPreviewVisible] = React.useState(false)
-  const [capturedImage, setCapturedImage] = React.useState<any>(null)
-  const [cameraType, setCameraType] = React.useState(Camera.Constants.Type.back)
-  const [flashMode, setFlashMode] = React.useState('off')
-  var camera: Camera;
 
+  const [image, setImage] = useState(null)
+  const [uploaded, setUploaded] = useState(false)
+  const [name, setName] = useState(null)
+  const [recipes, setRecipes] = useState(null)
 
-  async function base64ToFile(base64) {
-    const res = fetch(base64)
-    const buf = await res.arrayBuffer()
-    const file = new File([buf], "capture_camera.jpeg", {
-      type: 'image/jpeg',
+  const pickImage = async() => {
+    let result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      allowsEditing: true,
+      aspect: [4, 3],
+      quality: 1
     })
-    return file;
-  };
-  
-  const __startCamera = async () => {
-    const {status} = await Camera.requestCameraPermissionsAsync()
-    if (status === 'granted') {
-      setStartCamera(true)
-    } else {
-      Alert.alert('Access denied')
-    }
-  }
-  const __takePicture = async () => {
-    try {
-        const options = { quality: 0, base64: true, skipProcessing: true };
-        photo = await camera.takePictureAsync(options);
-        setPreviewVisible(true)
-        setCapturedImage(photo)
-    } catch (error) {
-        console.log(error, "ERROR <<<<<<<<<<<<<")
+
+    if (!result.canceled) {
+      setImage(result.assets[0].uri)
     }
   }
 
-  const __savePhoto = () => {
-    var FormData = require('form-data');
-    var data = new FormData();
-
-    var fileVersion = base64ToFile(capturedImage.base64)
- 
-    data.append('image', fileVersion);
-    
-    var config = {
-      method: 'post',
-      url: 'https://api.logmeal.es/v2/image/recognition/complete/:model_version?skip_types=[1,3]&language=eng',
-      headers: { 
-        'Content-Type': 'multipart/form-data', 
-        'Accept': 'application/json', 
-        'Authorization': 'Bearer ' + LOGMEAL_API_KEY
-      },
-      data : data._parts[0][1]
-    };
-
-    axios(config)
-    .then(function (response) {
-      console.log(JSON.stringify(response.data));
-    })
-    .catch(function (error) {
-      console.log(error);
-    });    
+  const getData = async() => {
+    const formData = createFormData(image)
+    setUploaded(true)     
+    Axios.post(`https://api.spoonacular.com/food/images/analyze?apiKey=${SPOONACULAR_API_KEY}`, formData)
+    .then(response => {setName(response.data.category.name); setRecipes(response.data.recipes); console.log(response.data)})
   }
 
-  const __retakePicture = () => {
-    setCapturedImage(null)
-    setPreviewVisible(false)
-    __startCamera()
+  const resetState = async() => {
+    setImage(null)
   }
-  const __handleFlashMode = () => {
-    if (flashMode === 'on') {
-      setFlashMode('off')
-    } else if (flashMode === 'off') {
-      setFlashMode('on')
-    } else {
-      setFlashMode('auto')
-    }
-  }
-  const __switchCamera = () => {
-    if (cameraType === 'back') {
-      setCameraType('front')
-    } else {
-      setCameraType('back')
-    }
-  }
-  
 
-  return (
-    <View style={styles.container}>
-      {startCamera ? (
-        <View
-          style={{
-            flex: 1,
-            width: '100%'
-          }}
-        >
-          {previewVisible && capturedImage ? (
-            <CameraPreview photo={capturedImage} savePhoto={__savePhoto} retakePicture={__retakePicture} />
-          ) : (
-            <Camera
-              type={cameraType}
-              flashMode={flashMode}
-              style={{flex: 1}}
-              ref={(r) => {
-                camera = r
-              }}
-            >
-              <View
-                style={{
-                  flex: 1,
-                  width: '100%',
-                  backgroundColor: 'transparent',
-                  flexDirection: 'row'
-                }}
-              >
-                <View
-                  style={{
-                    position: 'absolute',
-                    left: '5%',
-                    top: '10%',
-                    flexDirection: 'column',
-                    justifyContent: 'space-between'
-                  }}
-                >
-                  <TouchableOpacity
-                    onPress={__handleFlashMode}
-                    style={{
-                      backgroundColor: flashMode === 'off' ? '#000' : '#fff',
-                      borderRadius: '50%',
-                      height: 25,
-                      width: 25
-                    }}
-                  >
-                    <Text
-                      style={{
-                        fontSize: 20
-                      }}
-                    >
-                      ⚡️
-                    </Text>
-                  </TouchableOpacity>
-                  <TouchableOpacity
-                    onPress={__switchCamera}
-                    style={{
-                      marginTop: 20,
-                      borderRadius: '50%',
-                      height: 25,
-                      width: 25
-                    }}
-                  >
-                    <Text
-                      style={{
-                        fontSize: 20
-                      }}
-                    >
-                      {cameraType === 'front' ? '🤳' : '📷'}
-                    </Text>
+  if (image != null) {
+
+    return (
+      <ScrollView contentContainerStyle={styles.scrollContainer}>
+        <View style={{alignSelf: "flex-start"}}>
+          <Button title="< Back" onPress={resetState} ></Button>
+        </View>
+        <Image source={{ uri: image }} style={{ width: 200, height: 200 }} />
+        <Button title="Get Recipe Information" onPress={getData} disabled={uploaded}/>
+        <View>
+          {name && <Text>The Identified Food Is: {name}</Text>}
+          {recipes && <Text>Recipes for {name}: (Click the image to navigate to the recipe)</Text>}
+        </View>
+        <View style={styles.recipes}>
+        {recipes &&
+          recipes.map((recipe, index) => {
+            return (
+                <View key={index} style={styles.recipe}>
+                  <Text>{recipe.title}</Text>
+                  <TouchableOpacity onPress={() => Linking.openURL(recipe.url)}>
+                    <Image source={{uri: `https://spoonacular.com/recipeImages/${recipe.id}-240x150.${recipe.imageType}`}} style={{width: 100, height: 100}}/>
                   </TouchableOpacity>
                 </View>
-                <View
-                  style={{
-                    position: 'absolute',
-                    bottom: 0,
-                    flexDirection: 'row',
-                    flex: 1,
-                    width: '100%',
-                    padding: 20,
-                    justifyContent: 'space-between'
-                  }}
-                >
-                  <View
-                    style={{
-                      alignSelf: 'center',
-                      flex: 1,
-                      alignItems: 'center'
-                    }}
-                  >
-                    <TouchableOpacity
-                      onPress={__takePicture}
-                      style={{
-                        width: 70,
-                        height: 70,
-                        bottom: 0,
-                        borderRadius: 50,
-                        backgroundColor: '#fff'
-                      }}
-                    />
-                  </View>
-                </View>
-              </View>
-            </Camera>
-          )}
-        </View>
-      ) : (
-        <View
-          style={{
-            flex: 1,
-            backgroundColor: '#fff',
-            justifyContent: 'center',
-            alignItems: 'center'
-          }}
-        >
-          <TouchableOpacity
-            onPress={__startCamera}
-            style={{
-              width: 130,
-              borderRadius: 4,
-              backgroundColor: '#14274e',
-              flexDirection: 'row',
-              justifyContent: 'center',
-              alignItems: 'center',
-              height: 40
-            }}
-          >
-            <Text
-              style={{
-                color: '#fff',
-                fontWeight: 'bold',
-                textAlign: 'center'
-              }}
-            >
-              Take picture
-            </Text>
-          </TouchableOpacity>
-        </View>
-      )}
-
-      <StatusBar style="auto" />
-    </View>
-  )
-}
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center'
-  }
-})
-
-const CameraPreview = ({photo, retakePicture, savePhoto}) => {
-  return (
-    <View
-      style={{
-        backgroundColor: 'transparent',
-        flex: 1,
-        width: '100%',
-        height: '100%'
-      }}
-    >
-      <ImageBackground
-        source={{uri: photo && photo.uri}}
-        style={{
-          flex: 1
-        }}
-      >
-        <View
-          style={{
-            flex: 1,
-            flexDirection: 'column',
-            padding: 15,
-            justifyContent: 'flex-end'
-          }}
-        >
-          <View
-            style={{
-              flexDirection: 'row',
-              justifyContent: 'space-between'
-            }}
-          >
-            <TouchableOpacity
-              onPress={retakePicture}
-              style={{
-                justifyContent: 'center',
-                alignItems: 'center',
-                width: 130,
-                height: 40,
-                backgroundColor: 'rgba(128, 128, 128, 0.8)',
-                alignItems: 'center',
-                borderRadius: 20
-              }}
-            >
-              <Text
-                style={{
-                  color: '#fff',
-                  fontSize: 20
-                }}
-              >
-                Re-take
-              </Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              onPress={savePhoto}
-              style={{
-                justifyContent: 'center',
-                alignItems: 'center',
-                width: 130,
-                height: 40,
-                backgroundColor: 'rgba(128, 128, 128, 0.8)',
-                alignItems: 'center',
-                borderRadius: 20
-              }}
-            >
-              <Text
-                style={{
-                  color: '#fff',
-                  fontSize: 20
-                }}
-              >
-                Use photo
-              </Text>
-            </TouchableOpacity>
-          </View>
-        </View>
-      </ImageBackground>
-    </View>
-  )
-}
-
-
-
-
-
-  /*return (
-    <View style={styles.container}>
-      {startCamera ? (
-        <View
-          style={{
-            flex: 1,
-            width: '100%'
-          }}
-        >
-          {previewVisible && capturedImage ? (
-            <CameraPreview photo={capturedImage} savePhoto={__savePhoto} retakePicture={__retakePicture} />
-          ) : (
-            <Camera
-              type={cameraType}
-              flashMode={flashMode}
-              style={{flex: 1}}
-              ref={(r) => {
-                camera = r
-              }}
-            >
-              <View
-                style={{
-                  flex: 1,
-                  width: '100%',
-                  backgroundColor: 'transparent',
-                  flexDirection: 'row'
-                }}
-              >
-                <View
-                  style={{
-                    position: 'absolute',
-                    left: '5%',
-                    top: '10%',
-                    flexDirection: 'column',
-                    justifyContent: 'space-between'
-                  }}
-                >
-                  <TouchableOpacity
-                    onPress={__handleFlashMode}
-                    style={{
-                      backgroundColor: flashMode === 'off' ? '#000' : '#fff',
-                      borderRadius: '50%',
-                      height: 25,
-                      width: 25
-                    }}
-                  >
-                    <Text
-                      style={{
-                        fontSize: 20
-                      }}
-                    >
-                      ⚡️
-                    </Text>
-                  </TouchableOpacity>
-                  <TouchableOpacity
-                    onPress={__switchCamera}
-                    style={{
-                      marginTop: 20,
-                      borderRadius: '50%',
-                      height: 25,
-                      width: 25
-                    }}
-                  >
-                    <Text
-                      style={{
-                        fontSize: 20
-                      }}
-                    >
-                      {cameraType === 'front' ? '🤳' : '📷'}
-                    </Text>
-                  </TouchableOpacity>
-                </View>
-                <View
-                  style={{
-                    position: 'absolute',
-                    bottom: 0,
-                    flexDirection: 'row',
-                    flex: 1,
-                    width: '100%',
-                    padding: 20,
-                    justifyContent: 'space-between'
-                  }}
-                >
-                  <View
-                    style={{
-                      alignSelf: 'center',
-                      flex: 1,
-                      alignItems: 'center'
-                    }}
-                  >
-                    <TouchableOpacity
-                      onPress={__takePicture}
-                      style={{
-                        width: 70,
-                        height: 70,
-                        bottom: 0,
-                        borderRadius: 50,
-                        backgroundColor: '#fff'
-                      }}
-                    />
-                  </View>
-                </View>
-              </View>
-            </Camera>
-          )}
-        </View>
-      ) : (
-        <View
-          style={{
-            flex: 1,
-            backgroundColor: '#fff',
-            justifyContent: 'center',
-            alignItems: 'center'
-          }}
-        >
-          <TouchableOpacity
-            onPress={__startCamera}
-            style={{
-              width: 130,
-              borderRadius: 4,
-              backgroundColor: '#14274e',
-              flexDirection: 'row',
-              justifyContent: 'center',
-              alignItems: 'center',
-              height: 40
-            }}
-          >
-            <Text
-              style={{
-                color: '#fff',
-                fontWeight: 'bold',
-                textAlign: 'center'
-              }}
-            >
-              Take picture
-            </Text>
-          </TouchableOpacity>
-        </View>
-      )}
-
-      <StatusBar style="auto" />
-    </View>
-  )
-};
-  
-  const [predictions, setPredictions] = useState(null);
-  const [imageToAnalyze, setImageToAnalyze] = useState(null);
-
-  const logmealApp = new Logmeal.App({
-    apiKey: LOGMEAL_API_KEY,
-  });
-  process.nextTick = setImmediate;
-
-  useEffect(() => {
-    const getPermissionAsync = async () => {
-      if (Platform.OS !== "web") {
-        const {
-          status,
-        } = await ImagePicker.requestMediaLibraryPermissionsAsync();
-        if (status !== "granted") {
-          alert("Sorry, we need camera roll permissions to make this work!");
-        }
-      }
-    };
-    getPermissionAsync();
-  }, []);
-
-  const logmealDetectObjectsAsync = async (source: string | undefined) => {
-    try {
-      const newPredictions = await LogmealApp.models.predict(
-        { id: Logmeal.FOOD_MODEL },
-        { base64: source },
-        { maxConcepts: 10, minValue: 0.4 }
-      );
-      // console.log(newPredictions.outputs[0].data.concepts);
-      setPredictions(newPredictions.outputs[0].data.concepts);
-    } catch (error) {
-      console.log("Exception Error: ", error);
-    }
-  };
-
-  const selectImageAsync = async () => {
-    try {
-      let response = await ImagePicker.launchImageLibraryAsync({
-        mediaTypes: ImagePicker.MediaTypeOptions.All,
-        allowsEditing: true,
-        aspect: [4, 3],
-      });
-
-      if (!response.cancelled) {
-        // resize image to avoid out of memory crashes
-        const manipResponse = await ImageManipulator.manipulateAsync(
-          response.uri,
-          [{ resize: { width: 900 } }],
-          {
-            compress: 1,
-            format: ImageManipulator.SaveFormat.JPEG,
-            base64: true,
-          }
-        );
-
-        const source = { uri: manipResponse.uri };
-        setImageToAnalyze(source);
-        setPredictions(null);
-        // send base64 version to clarifai
-        await logmealDetectObjectsAsync(manipResponse.base64);
-      }
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
-  return (
-    <View style={styles.container}>
-      <ScrollView
-        style={styles.container}
-        contentContainerStyle={styles.contentContainer}
-      >
-        <View style={styles.welcomeContainer}>
-          <Text style={styles.headerText}>Logmeal Food Detection</Text>
-
-          <TouchableOpacity
-            style={styles.imageWrapper}
-            onPress={selectImageAsync}
-          >
-            {imageToAnalyze && (
-              <View style={{ position: "relative" }}>
-                <View
-                  style={{
-                    zIndex: 0,
-                    elevation: 0,
-                  }}
-                >
-                  <Image
-                    source={imageToAnalyze}
-                    style={styles.imageContainer}
-                  />
-                </View>
-              </View>
-            )}
-
-            {!imageToAnalyze && (
-              <Text style={styles.transparentText}>Tap to choose image</Text>
-            )}
-          </TouchableOpacity>
-          <View style={styles.predictionWrapper}>
-            {imageToAnalyze && (
-              <Text style={styles.text}>
-                Predictions: {predictions ? "" : "Predicting..."}
-              </Text>
-            )}
-            {predictions &&
-              predictions?.length &&
-              console.log("=== Detect foods predictions: ===")}
-
-            {predictions &&
-              predictions.map(
-                (
-                  p: { name: React.ReactNode; value: React.ReactNode },
-                  index: string | number | null | undefined
-                ) => {
-                  console.log(`${index} ${p.name}: ${p.value}`);
-                  return (
-                    <Text key={index} style={styles.text}>
-                      {p.name}: {parseFloat(p.value).toFixed(3)}
-                    </Text>
-                  );
-                }
-              )}
-          </View>
-        </View>
+            );
+          })}
+        </View>        
       </ScrollView>
+    )
+  }
+
+  return (
+    <View style={styles.container}>
+      <Button title="Select an Image of Food from Camera Roll" onPress={pickImage} />
     </View>
-  );
+  )
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-  },
-  welcomeContainer: {
     alignItems: "center",
-    marginTop: 10,
-    marginBottom: 20,
-  },
-  contentContainer: {
-    paddingTop: 30,
-  },
-  headerText: {
-    marginTop: 5,
-    fontSize: 20,
-    fontWeight: "bold",
-  },
-  text: {
-    fontSize: 16,
-  },
-  imageWrapper: {
-    width: 300,
-    height: 300,
-    borderColor: "#66c8cf",
-    borderWidth: 3,
-    borderStyle: "dashed",
-    marginTop: 40,
-    marginBottom: 10,
-    position: "relative",
     justifyContent: "center",
-    alignItems: "center",
   },
-  imageContainer: {
-    width: 280,
-    height: 280,
+  scrollContainer: {
+    flexDirection: "column"
   },
-  predictionWrapper: {
-    width: "100%",
-    flexDirection: "column",
-    alignItems: "center",
+  recipes: {
+    flex: 1,
+    flexDirection: "row",
+    flexWrap: "wrap",
+    justifyContent: "space-evenly"
   },
-  transparentText: {
-    opacity: 0.8,
+  recipe: {
+    maxWidth: recipe_width,
+    borderRadius: 5,
+    backgroundColor: "#05d31d",
+    color: "#000000",
+    padding: 20 ,
+    margin: 10,
+    width: recipe_width,
   },
-});*/
+});
+
+

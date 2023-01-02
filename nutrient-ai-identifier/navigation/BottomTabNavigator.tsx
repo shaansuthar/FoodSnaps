@@ -8,12 +8,9 @@ import useColorScheme from "../hooks/useColorScheme";
 import HomeScreen from "../screens/HomeScreen";
 import DetectFoodsScreen from "../screens/DetectFoodsScreen";
 import ChatbotScreen from "../screens/ChatbotScreen";
-// import TabFiveScreen from "../screens/TabFiveScreen";
 
 import {
   BottomTabParamList,
-  // TabOneParamList,
-  // TabTwoParamList
 } from "../types";
 
 const BottomTab = createBottomTabNavigator<BottomTabParamList>();
