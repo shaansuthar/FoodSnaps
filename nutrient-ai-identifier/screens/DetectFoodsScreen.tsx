@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { View, Button, Image, StyleSheet, Text, ScrollView, TouchableOpacity, Linking } from "react-native";
 import * as ImagePicker from "expo-image-picker";
 import {SPOONACULAR_API_KEY} from "@env";
