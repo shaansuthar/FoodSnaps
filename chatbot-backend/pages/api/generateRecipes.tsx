@@ -5,11 +5,13 @@ const configuration = new Configuration({
 });
 const openai = new OpenAIApi(configuration);
 
+let query = `The following is a conversation with an AI assistant. The assistant tends to ask clarifying questions to narrow down interest and generates recipes based on the ingredients provided by the human.\n\nAI: Hi! I am a recipe bot. I can help you find recipes based on ingredients. Try it now!`
+
 export default async function (req, res) {
   if (!configuration.apiKey) {
     res.status(500).json({
       error: {
-        message: "OpenAI API key not configured, please follow instructions in README.md",
+        message: "OpenAI API key not configured",
       }
     });
     return;
@@ -28,7 +30,7 @@ export default async function (req, res) {
   try {
     const completion = await openai.createCompletion({
       model: "text-davinci-003",
-      prompt: ingredient,
+      prompt: generatePrompt(ingredient),
       temperature: 0.9,
       max_tokens: 2048,
       top_p: 1,
@@ -36,6 +38,8 @@ export default async function (req, res) {
       presence_penalty: 0.6,
       stop: [" Human:", " AI:"],      
     });
+    query =`${query}${completion.data.choices[0].text}`
+    console.log(query)
     res.status(200).json({ result: completion.data.choices[0].text });
   } catch(error) {
     if (error.response) {
@@ -50,4 +54,10 @@ export default async function (req, res) {
       });
     }
   }
+}
+
+function generatePrompt(humanQuery) {
+  query = `${query}\nHuman: ${humanQuery}\n`
+  console.log(query)
+  return query
 }
