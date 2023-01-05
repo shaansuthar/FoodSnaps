@@ -5,13 +5,13 @@ const configuration = new Configuration({
 });
 const openai = new OpenAIApi(configuration);
 
-let query = `The following is a conversation with an AI assistant. The assistant tends to ask clarifying questions to narrow down interest and generates recipes based on the ingredients provided by the human.\n\nAI: Hi! I am a recipe bot. I can help you find recipes based on ingredients. Try it now!`
+let query = `The following is a conversation with an AI assistant. The assistant tends to ask clarifying questions to narrow down interest and generates recipes based on the ingredients provided by the human.\n\nAI: Hi! I am a recipe bot. I can help you find recipes based on ingredients.`
 
 export default async function (req, res) {
   if (!configuration.apiKey) {
     res.status(500).json({
       error: {
-        message: "OpenAI API key not configured",
+        message: "OpenAI API key not configured.",
       }
     });
     return;

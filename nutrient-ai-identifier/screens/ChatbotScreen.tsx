@@ -1,76 +1,88 @@
-import React, { useState, useCallback, useEffect } from 'react'
-import { View, StyleSheet, ViewPagerAndroidComponent } from 'react-native'
-import { GiftedChat } from 'react-native-gifted-chat'
-const API_URL = "https://729f-2001-1970-59e1-8a00-38fd-729b-e62b-7e18.ngrok.io/api/"
+import React, { useState } from 'react'
+import { View, StyleSheet } from 'react-native'
+import { GiftedChat, Reply } from 'react-native-gifted-chat'
+const API_URL = "https://2c6d-2001-1970-59e1-8a00-457a-49cb-e848-f1b6.ngrok.io/api/"
  
 const botAvatar = require('../assets/images/foodsnaps_logo.png')
 
 const BOT = {
-  _id: 2,
+  _id: 4,
   name: 'Sprite',
   avatar: botAvatar
 }
 
-const introMessage = {
-    _id: 1,
-    text: "Hi! I am a recipe bot. I can help you find recipes based on ingredients. Try it now!",
-    createdAt: new Date(),
-    user: BOT,
-} 
-
 export default function ChatBotScreen() {
 
-    const [messages, setMessages] = useState([])
+    const [messages, setMessages] = useState([
+        {
+            _id: 1,
+            text: 'Hi! I am a recipe bot. I can help you find recipes based on ingredients.',
+            createdAt: new Date(),
+            user: BOT
+        }
+    ])
 
-    useEffect(() => {
-        setMessages([introMessage])
-      }, [])
-
-      const onSend = useCallback((messages = []) => {
-        setMessages(previousMessages => GiftedChat.append(previousMessages, messages))
-        let prompt = messages[0].text
-        var myHeaders = new Headers();
+    const onSend = (message: any) => {
+        setMessages(previousMessages => {
+            return GiftedChat.append(previousMessages, message)
+        })
+        let prompt = message[0].text
+        let myHeaders = new Headers();
         myHeaders.append("Content-Type", "application/json");
         
-        var raw = JSON.stringify({
-          "ingredient": prompt
+        let raw = JSON.stringify({
+            "ingredient": prompt
         });
         
-        var requestOptions = {
-          method: 'POST',
-          headers: myHeaders,
-          body: raw,
-          redirect: 'follow'
+        let requestOptions = {
+            method: 'POST',
+            headers: myHeaders,
+            body: raw,
+            redirect: 'follow'
         };
         
-        fetch("https://729f-2001-1970-59e1-8a00-38fd-729b-e62b-7e18.ngrok.io/api/generateRecipes", requestOptions)
-          .then(response => response.json())
-          .then(result => {
-            handleOpenAIResponse(result)
-          })
-          .catch(error => console.log('error', error));        
+        fetch(`${API_URL}generateRecipes`, requestOptions)
+            .then(response => response.json())
+            .then(result => {
+                handleOpenAIResponse(result)
+            })
+            .catch(error => console.log('error', error));        
 
-        
-      }, [])
+    }
 
-      const handleOpenAIResponse = (response) => {
-        let text = response.result.trim()
-        console.log(messages.length)
+    const handleOpenAIResponse = (result: any) => {
+    let text = result.result.trim().replace("AI: ","")
+    sendResponse(text)
+    }
+
+    const sendResponse = (text: any) => {
         let msg = {
-            _id: messages.length + 2,
-            text: text,
+            _id: messages.length + 1,
+            text,
             createdAt: new Date(),
-            user: BOT,
+            user: BOT
         }
+        setMessages(previousMessages => {
+            return GiftedChat.append(previousMessages, [msg])
+        })
+    }
 
-        setMessages(previousMessages => GiftedChat.append(previousMessages, [msg]))
-      }
+    const onQuickReply = (reply: Reply[]) => {
+        let msg = {
+            _id: messages.length + 1000,
+            text: reply[0].value,
+            createdAt: new Date(),
+            user: BOT
+        }
+        onSend([msg])
+    }
 
       return (
         <View style={styles.container}>
             <GiftedChat 
             messages={messages}
             onSend={messages => onSend(messages)}
+            onQuickReply={(reply: Reply[]) => onQuickReply(reply)}
             user={{_id: 1}}
             bottomOffset={74} />
         </View>
