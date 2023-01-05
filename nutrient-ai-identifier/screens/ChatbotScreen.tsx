@@ -1,6 +1,9 @@
 import React, { useState } from 'react'
 import { View, StyleSheet } from 'react-native'
 import { GiftedChat, Reply } from 'react-native-gifted-chat'
+
+// Since I am using ngrok to tunnel my localhost, I need to change the API_URL to the ngrok URL, which is generated every time I start ngrok.
+// I used ngrok because I have not deployed this web api to a server
 const API_URL = "https://2c6d-2001-1970-59e1-8a00-457a-49cb-e848-f1b6.ngrok.io/api/"
  
 const botAvatar = require('../assets/images/foodsnaps_logo.png')

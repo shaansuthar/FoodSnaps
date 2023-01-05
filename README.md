@@ -1,58 +1,62 @@
 # FoodSnaps
 
-TLDR: Using computer vision and machine learning, FoodSnaps identifies the foods in front of you and provides you with accurate nutrition facts and easy to make healthy recipes.
+FoodSnaps is a mobile application made during Hack Western 2022. The inspiration for this app came from a common problem many people face when it comes to meal planning and ingredient management - not knowing what to cook when you have limited ingredients available. Our goal was to make it easier for users to find recipes by lowering the friction of obtaining them. To achieve this, we implemented two input methods for finding recipes - using the camera to snap a picture of an ingredient and interacting with an AI chatbot to describe textually what you want to eat.
 
-<h2>Background</h2>
+### Note : Navigate to nutrient-ai-identifier folder for react native app
 
-This project was made during HackWestern 2022 to help people identify the foods in front of them and make healthier food choices. Using your phones camera, FoodSnaps is able to find exactly what you are eating or what you plan to make food with. We then calculate the nutrition facts to inform the consumer of the nutritional value of the foods they are eating. With this information, we can then provide the user with easy to make healthy recipes that include the ingredients they have in front of them. Another feature that FoodSnaps includes is that if the food is not directly with you, we can still help you find delicious and healthy recipes based on the users input.
+## ⚙️ Features
+- Select an image from camera roll
+- Chat with an AI Chatbot
 
-<p align="center">
-  <img src = "nutrient-ai-identifier/assets/images/foodsnaps_logo.png" width="35%" height ="10%">
-</p>
+## 📸 Screenshots
+|||
+|:----------------------------------------:|:-----------------------------------------:|
+| ![Imgur](https://imgur.com/Kgd1DBM.png) | ![Imgur](https://imgur.com/95td8tg.png) |
+| ![Imgur](https://imgur.com/du7IDCp.png) | ![Imgur](https://imgur.com/AHex9ZG.png) |
+| ![Imgur](https://imgur.com/STIA6aN.png) | ![Imgur](https://imgur.com/YQ94coz.png) |
+| ![Imgur](https://imgur.com/ob8dMg4.png) | ![]()
 
+## Built With 🛠
+- [Expo](https://expo.dev/) - Expo is an open-source platform for making universal native apps with JavaScript and React
+- [React](https://reactjs.org/) - React is a JavaScript library for building user interfaces
+- [NodeJS](https://nodejs.org/en/) - Node.js is an open-source, cross-platform, back-end JavaScript runtime environment
+- [Spoonacular](https://spoonacular.com/food-api) - Spoonacular is a food and recipe API
+- [OpenAI](https://openai.com/api/) - OpenAI's GPT-3 API performs a variety of tasks related to natural language
+- [Next.js](https://nextjs.org) - Next.js is an open-source web development framework created by Vercel enabling React-based web applications
 
-<h2>How It Works</h2>
+## Prerequisties
+- [NodeJS](https://nodejs.org/en/) version 14+
+- [OpenAI API Key](https://openai.com/api/)
+- [Spoonacular API Key](https://spoonacular.com/food-api/console#Dashboard)
+- [ngrok](https://ngrok.com/)
 
-Using LogMeal's API we can use artificial intelligence to recognize types of food and the ingredients that are in them. From these images, LogMeal is able to find recipes that fit your items and can provide healthy options based on your ingredients. The app also includes a built in chatbot that scans various websites and finds the best match to provide a healthy recipe based on the user's search criteria.
+## Getting started
+- Clone the repo
 
-<h2>System Requirements</h2>
+```sh
+git clone git@github.com:richardl2003/FoodSnaps.git
+cd AI-NUTRITION-IDENTIFICATION
+```
 
-To recreate this project you will need the following hardware:
-- A Windows, Mac or Linux computer
-- A mobile device with Expo Go installed to run your project on
+- Create environment variables for API keys
 
+- Open two terminal shells
 
-To recreate this project you will need the following software:
-- React Native
-- Expo
-- LogMeal API
+```sh 
+cd nutrient-ai-identifier
 
-<img src="https://api.logmeal.es/assets/logo_complete_v2.png" title="LogMeal" width="75%"/>
+# Followed by
+npx start expo
+```
 
-<h2>Steps to Replicate</h2>
+```sh
+cd chatbot-backend
 
-1. Clone the repository
-	```sh git clone git@github.com:shaansuthar/FoodSnaps.git```
-2. NPM install
-3. Obtain LogMeal API key `
-4. Run NPX expo start
-	```sh npx expo start```
-5. Download the Expo Go app on your mobile device
-6. Scan QR code 
-7. Enjoy healthy food
+# Followed by
+npm run dev
+```
 
-
-
-
-<h2>Next Steps</h2>
-
-There are many things that we can do to improve on this project for the future, including:
-- Properly import and access the API
-- Identify larger varieties of food items
-- Create more functionality within the app
-- Remove bugs in the code
-- Implement a chatbot that has NLP capabilities using Cohere's native environment
-
+Note: to get the chatbot-backend to work, I used ngrok to prevent `Network Request Failed` error, follow this [tutorial](https://www.youtube.com/watch?v=OgUPClyIu-s)
 
 <h2>Tools We Used</h2>
 
